@@ -5,18 +5,18 @@ const ContactSection = () => {
   return (
     <section id="contact" className="min-h-screen flex items-center justify-center bg-white">
       <div className="max-w-7xl mx-auto px-4 py-20">
-        <div className="text-center mb-12">
-          <h2 className="text-4xl font-bold text-gray-800 mb-4">
+        <div className="text-center mb-8 sm:mb-12">
+          <h2 className="text-3xl sm:text-4xl font-bold text-gray-800 mb-4">
             Contacto
           </h2>
-          <p className="text-xl text-gray-600">
+          <p className="text-lg sm:text-xl text-gray-600">
             Estamos aquí para ayudarte
           </p>
         </div>
-        <div className="max-w-xl mx-auto bg-white rounded-xl shadow-lg p-8">
-          <form className="space-y-6">
+        <div className="max-w-xl mx-auto bg-white rounded-xl shadow-lg p-4 sm:p-8">
+          <form className="space-y-4 sm:space-y-6">
             <div>
-              <label htmlFor="name" className="block text-lg font-medium text-gray-700 mb-2">
+              <label htmlFor="name" className="block text-base sm:text-lg font-medium text-gray-700 mb-2">
                 Nombre
               </label>
               <input
@@ -26,7 +26,7 @@ const ContactSection = () => {
               />
             </div>
             <div>
-              <label htmlFor="email" className="block text-lg font-medium text-gray-700 mb-2">
+              <label htmlFor="email" className="block text-base sm:text-lg font-medium text-gray-700 mb-2">
                 Email
               </label>
               <input
@@ -36,7 +36,7 @@ const ContactSection = () => {
               />
             </div>
             <div>
-              <label htmlFor="message" className="block text-lg font-medium text-gray-700 mb-2">
+              <label htmlFor="message" className="block text-base sm:text-lg font-medium text-gray-700 mb-2">
                 Mensaje
               </label>
               <textarea

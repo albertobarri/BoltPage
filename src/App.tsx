@@ -1,5 +1,5 @@
 import React, { useState, useEffect, lazy, Suspense } from 'react';
-import { Pill, Users, Phone, ShoppingCart, Bell, Calendar, Clock, Battery, X, Minus, Plus, Trash2, CreditCard } from 'lucide-react';
+import { Pill, Users, Phone, ShoppingCart, Bell, Calendar, Clock, Battery, X, Minus, Plus, Trash2, CreditCard, Menu } from 'lucide-react';
 
 // Lazy load sections
 const HomeSection = lazy(() => import('./sections/HomeSection'));
@@ -24,6 +24,7 @@ function App() {
   const [cartItems, setCartItems] = useState<CartItem[]>([]);
   const [showAddedFeedback, setShowAddedFeedback] = useState(false);
   const [isCartAnimating, setIsCartAnimating] = useState(false);
+  const [isMobileMenuOpen, setIsMobileMenuOpen] = useState(false);
 
   useEffect(() => {
     const handleScroll = () => {
@@ -36,7 +37,6 @@ function App() {
       });
     };
 
-    // Use passive scroll listener for better performance
     window.addEventListener('scroll', handleScroll, { passive: true });
     return () => window.removeEventListener('scroll', handleScroll);
   }, []);
@@ -44,6 +44,7 @@ function App() {
   const scrollToSection = (sectionId: string) => {
     const element = document.getElementById(sectionId);
     element?.scrollIntoView({ behavior: 'smooth' });
+    setIsMobileMenuOpen(false);
   };
 
   const calculateItemPrice = (type: string, doses: string, light: string) => {
@@ -99,22 +100,51 @@ function App() {
 
   const toggleCart = () => {
     setIsCartOpen(prev => !prev);
+    setIsMobileMenuOpen(false);
   };
 
   return (
     <div className="relative">
-      {/* Navigation */}
+      {/* Fixed Navigation */}
       <nav className="fixed top-0 left-0 right-0 bg-white/90 backdrop-blur-sm z-50 shadow-sm">
         <div className="max-w-7xl mx-auto px-4">
           <div className="flex items-center justify-between h-16">
             <button
               onClick={() => scrollToSection('home')}
-              className="flex items-center space-x-2 hover:opacity-80 transition-opacity"
+              className="flex items-center space-x-2 hover:opacity-80 transition-opacity z-50"
             >
-              <Pill className="text-blue-600 w-8 h-8" />
-              <span className="text-xl font-bold text-gray-800">RemindWell</span>
+              <Pill className="text-blue-600 w-6 h-6 sm:w-8 sm:h-8" />
+              <span className="text-lg sm:text-xl font-bold text-gray-800">RemindWell</span>
             </button>
-            <div className="flex items-center space-x-8">
+
+            {/* Mobile Menu Button */}
+            <div className="flex items-center space-x-4 md:hidden">
+              <button
+                onClick={toggleCart}
+                className="relative p-2"
+              >
+                <ShoppingCart size={24} className="text-gray-600" />
+                {cartItems.length > 0 && (
+                  <span className="absolute -top-1 -right-1 bg-red-500 text-white text-xs w-4 h-4 rounded-full flex items-center justify-center">
+                    {cartItems.length}
+                  </span>
+                )}
+              </button>
+              <button
+                onClick={() => setIsMobileMenuOpen(!isMobileMenuOpen)}
+                className="p-2 z-50 relative"
+                aria-label="Toggle menu"
+              >
+                {isMobileMenuOpen ? (
+                  <X size={24} className="text-gray-600" />
+                ) : (
+                  <Menu size={24} className="text-gray-600" />
+                )}
+              </button>
+            </div>
+
+            {/* Desktop Menu */}
+            <div className="hidden md:flex items-center space-x-8">
               <button
                 onClick={() => scrollToSection('home')}
                 className={`text-lg font-medium transition-colors ${
@@ -162,18 +192,78 @@ function App() {
             </div>
           </div>
         </div>
+
+        {/* Mobile Menu Overlay */}
+        <div
+          className={`fixed inset-0 bg-black/50 backdrop-blur-sm transition-opacity duration-300 md:hidden ${
+            isMobileMenuOpen ? 'opacity-100' : 'opacity-0 pointer-events-none'
+          }`}
+          onClick={() => setIsMobileMenuOpen(false)}
+        />
+
+        {/* Mobile Menu */}
+        <div
+          className={`fixed inset-y-0 left-0 w-64 bg-white shadow-xl transform transition-transform duration-300 ease-in-out md:hidden ${
+            isMobileMenuOpen ? 'translate-x-0' : '-translate-x-full'
+          }`}
+        >
+          <div className="flex flex-col h-full pt-20">
+            <div className="flex-1 px-4 py-6 space-y-4">
+              <button
+                onClick={() => scrollToSection('home')}
+                className={`w-full text-left px-4 py-3 rounded-lg transition-colors ${
+                  activeSection === 'home'
+                    ? 'bg-blue-50 text-blue-600'
+                    : 'text-gray-600 hover:bg-gray-50'
+                }`}
+              >
+                Inicio
+              </button>
+              <button
+                onClick={() => scrollToSection('product')}
+                className={`w-full text-left px-4 py-3 rounded-lg transition-colors ${
+                  activeSection === 'product'
+                    ? 'bg-blue-50 text-blue-600'
+                    : 'text-gray-600 hover:bg-gray-50'
+                }`}
+              >
+                RemindWell
+              </button>
+              <button
+                onClick={() => scrollToSection('about')}
+                className={`w-full text-left px-4 py-3 rounded-lg transition-colors ${
+                  activeSection === 'about'
+                    ? 'bg-blue-50 text-blue-600'
+                    : 'text-gray-600 hover:bg-gray-50'
+                }`}
+              >
+                Sobre nosotros
+              </button>
+              <button
+                onClick={() => scrollToSection('contact')}
+                className={`w-full text-left px-4 py-3 rounded-lg transition-colors ${
+                  activeSection === 'contact'
+                    ? 'bg-blue-50 text-blue-600'
+                    : 'text-gray-600 hover:bg-gray-50'
+                }`}
+              >
+                Contacto
+              </button>
+            </div>
+          </div>
+        </div>
       </nav>
 
       {/* Shopping Cart Slide-out */}
       <div
-        className={`fixed top-0 right-0 h-full w-96 bg-white shadow-2xl transform transition-transform duration-300 ease-in-out z-50 ${
+        className={`fixed top-0 right-0 h-full w-full sm:w-96 bg-white shadow-2xl transform transition-transform duration-300 ease-in-out z-50 ${
           isCartOpen ? 'translate-x-0' : 'translate-x-full'
         }`}
       >
-        <div className="p-6 h-full flex flex-col">
+        <div className="p-4 sm:p-6 h-full flex flex-col">
           <div className="flex justify-between items-center mb-6">
             <div>
-              <h2 className="text-2xl font-bold text-gray-800">Tu carrito</h2>
+              <h2 className="text-xl sm:text-2xl font-bold text-gray-800">Tu carrito</h2>
               <p className="text-sm text-gray-500">{totalItems} {totalItems === 1 ? 'artículo' : 'artículos'}</p>
             </div>
             <button
@@ -311,21 +401,21 @@ function App() {
         <ProductSection scrollToSection={scrollToSection} />
         <div id="buy" className="min-h-screen flex items-center justify-center bg-blue-50">
           <div className="max-w-7xl mx-auto px-4 py-20">
-            <h2 className="text-4xl font-bold text-gray-800 mb-12 text-center">
+            <h2 className="text-3xl sm:text-4xl font-bold text-gray-800 mb-8 sm:mb-12 text-center">
               Configura tu RemindWell
             </h2>
-            <div className="max-w-2xl mx-auto bg-white rounded-xl shadow-lg p-8">
-              <div className="space-y-8">
+            <div className="max-w-2xl mx-auto bg-white rounded-xl shadow-lg p-4 sm:p-8">
+              <div className="space-y-6 sm:space-y-8">
                 <div>
-                  <h3 className="text-xl font-semibold text-gray-800 mb-4">Tipo de pastillero</h3>
-                  <div className="flex space-x-4">
+                  <h3 className="text-lg sm:text-xl font-semibold text-gray-800 mb-4">Tipo de pastillero</h3>
+                  <div className="flex flex-col sm:flex-row gap-2 sm:space-x-4">
                     <button
                       onClick={() => setPillboxType('weekly')}
                       className={`px-6 py-3 rounded-lg font-medium transition-colors ${
                         pillboxType === 'weekly'
                           ? 'bg-blue-600 text-white'
                           : 'bg-gray-100 text-gray-600 hover:bg-gray-200'
-                      }`}
+                      } w-full sm:w-auto`}
                     >
                       Semanal
                     </button>
@@ -335,7 +425,7 @@ function App() {
                         pillboxType === 'monthly'
                           ? 'bg-blue-600 text-white'
                           : 'bg-gray-100 text-gray-600 hover:bg-gray-200'
-                      }`}
+                      } w-full sm:w-auto`}
                     >
                       Mensual
                     </button>
@@ -343,15 +433,15 @@ function App() {
                 </div>
 
                 <div>
-                  <h3 className="text-xl font-semibold text-gray-800 mb-4">Número de tomas</h3>
-                  <div className="flex flex-wrap gap-4">
+                  <h3 className="text-lg sm:text-xl font-semibold text-gray-800 mb-4">Número de tomas</h3>
+                  <div className="flex flex-col gap-2">
                     <button
                       onClick={() => setDosesPerDay('morning')}
                       className={`px-6 py-3 rounded-lg font-medium transition-colors ${
                         dosesPerDay === 'morning'
                           ? 'bg-blue-600 text-white'
                           : 'bg-gray-100 text-gray-600 hover:bg-gray-200'
-                      }`}
+                      } w-full`}
                     >
                       Mañana
                     </button>
@@ -361,7 +451,7 @@ function App() {
                         dosesPerDay === 'night'
                           ? 'bg-blue-600 text-white'
                           : 'bg-gray-100 text-gray-600 hover:bg-gray-200'
-                      }`}
+                      } w-full`}
                     >
                       Noche
                     </button>
@@ -371,7 +461,7 @@ function App() {
                         dosesPerDay === 'three-times'
                           ? 'bg-blue-600 text-white'
                           : 'bg-gray-100 text-gray-600 hover:bg-gray-200'
-                      }`}
+                      } w-full`}
                     >
                       Mañana, mediodía y noche
                     </button>
@@ -379,15 +469,15 @@ function App() {
                 </div>
 
                 <div>
-                  <h3 className="text-xl font-semibold text-gray-800 mb-4">Indicador de luz</h3>
-                  <div className="flex space-x-4">
+                  <h3 className="text-lg sm:text-xl font-semibold text-gray-800 mb-4">Indicador de luz</h3>
+                  <div className="flex flex-col sm:flex-row gap-2 sm:space-x-4">
                     <button
                       onClick={() => setHasLight('with-light')}
                       className={`px-6 py-3 rounded-lg font-medium transition-colors ${
                         hasLight === 'with-light'
                           ? 'bg-blue-600 text-white'
                           : 'bg-gray-100 text-gray-600 hover:bg-gray-200'
-                      }`}
+                      } w-full sm:w-auto`}
                     >
                       Con luz
                     </button>
@@ -397,7 +487,7 @@ function App() {
                         hasLight === 'without-light'
                           ? 'bg-blue-600 text-white'
                           : 'bg-gray-100 text-gray-600 hover:bg-gray-200'
-                      }`}
+                      } w-full sm:w-auto`}
                     >
                       Sin luz
                     </button>
