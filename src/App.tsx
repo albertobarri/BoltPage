@@ -121,7 +121,9 @@ function App() {
             <div className="flex items-center space-x-4 md:hidden">
               <button
                 onClick={toggleCart}
-                className="relative p-2"
+                className={`relative p-2 transform transition-transform duration-300 ${
+                  isCartAnimating ? 'scale-125' : 'scale-100'
+                }`}
               >
                 <ShoppingCart size={24} className="text-gray-600" />
                 {cartItems.length > 0 && (
@@ -179,7 +181,9 @@ function App() {
               </button>
               <button
                 onClick={toggleCart}
-                className="bg-blue-600 text-white px-6 py-2 rounded-full font-medium hover:bg-blue-700 transition-colors flex items-center space-x-2 relative"
+                className={`bg-blue-600 text-white px-6 py-2 rounded-full font-medium hover:bg-blue-700 transition-all flex items-center space-x-2 relative transform duration-300 ${
+                  isCartAnimating ? 'scale-110' : 'scale-100'
+                }`}
               >
                 <ShoppingCart size={20} />
                 <span>Carrito</span>
@@ -378,7 +382,7 @@ function App() {
       <div
         className={`fixed bottom-8 right-8 transform transition-transform duration-300 ${
           isCartAnimating ? 'scale-125' : 'scale-100'
-        } z-50 md:hidden`}
+        } z-50`}
       >
         <button
           onClick={toggleCart}
