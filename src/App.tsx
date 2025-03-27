@@ -107,10 +107,13 @@ function App() {
       <nav className="fixed top-0 left-0 right-0 bg-white/90 backdrop-blur-sm z-50 shadow-sm">
         <div className="max-w-7xl mx-auto px-4">
           <div className="flex items-center justify-between h-16">
-            <div className="flex items-center space-x-2">
+            <button
+              onClick={() => scrollToSection('home')}
+              className="flex items-center space-x-2 hover:opacity-80 transition-opacity"
+            >
               <Pill className="text-blue-600 w-8 h-8" />
               <span className="text-xl font-bold text-gray-800">RemindWell</span>
-            </div>
+            </button>
             <div className="flex items-center space-x-8">
               <button
                 onClick={() => scrollToSection('home')}

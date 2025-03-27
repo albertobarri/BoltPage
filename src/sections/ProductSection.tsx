@@ -51,12 +51,14 @@ const ProductSection = ({ scrollToSection }: ProductSectionProps) => {
                   <p className="text-gray-600">Batería de larga duración y fácil recarga mediante USB.</p>
                 </div>
               </div>
-              <button
-                onClick={() => scrollToSection('buy')}
-                className="mt-8 bg-blue-600 text-white px-8 py-4 rounded-lg font-medium hover:bg-blue-700 transition-colors w-full md:w-auto"
-              >
-                Configurar mi RemindWell
-              </button>
+              <div className="flex justify-center">
+                <button
+                  onClick={() => scrollToSection('buy')}
+                  className="mt-8 bg-blue-600 text-white px-8 py-4 rounded-lg font-medium hover:bg-blue-700 transition-colors"
+                >
+                  Configurar mi RemindWell
+                </button>
+              </div>
             </div>
           </div>
           <img
