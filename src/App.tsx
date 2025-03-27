@@ -21,10 +21,19 @@ function App() {
   const [dosesPerDay, setDosesPerDay] = useState('morning');
   const [hasLight, setHasLight] = useState('with-light');
   const [isCartOpen, setIsCartOpen] = useState(false);
-  const [cartItems, setCartItems] = useState<CartItem[]>([]);
+  const [cartItems, setCartItems] = useState<CartItem[]>(() => {
+    // Initialize cart items from localStorage
+    const savedCart = localStorage.getItem('cartItems');
+    return savedCart ? JSON.parse(savedCart) : [];
+  });
   const [showAddedFeedback, setShowAddedFeedback] = useState(false);
   const [isCartAnimating, setIsCartAnimating] = useState(false);
   const [isMobileMenuOpen, setIsMobileMenuOpen] = useState(false);
+
+  // Save cart items to localStorage whenever they change
+  useEffect(() => {
+    localStorage.setItem('cartItems', JSON.stringify(cartItems));
+  }, [cartItems]);
 
   useEffect(() => {
     const handleScroll = () => {
